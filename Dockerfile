@@ -1,17 +1,15 @@
 # Build stage
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 RUN apk update && apk upgrade --no-cache
-RUN npm install -g npm@10 && cd /usr/local/lib/node_modules/npm && npm install picomatch@latest ip-address@latest brace-expansion@latest sigstore@latest @sigstore/core@latest
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY . .
 
 # Runtime stage
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 RUN apk update && apk upgrade --no-cache
-RUN npm install -g npm@10 && cd /usr/local/lib/node_modules/npm && npm install picomatch@latest ip-address@latest brace-expansion@latest sigstore@latest @sigstore/core@latest
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 COPY --from=build --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=build --chown=nodejs:nodejs /app/src ./src
