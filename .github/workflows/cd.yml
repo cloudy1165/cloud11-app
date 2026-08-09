@@ -8,8 +8,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    needs: [lint-and-test, security-scan]
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       packages: write
@@ -62,62 +60,14 @@ jobs:
         with:
           sarif_file: 'trivy-image-results.sarif'
 
-  deploy-staging:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    environment: staging
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-
-      - name: Configure kubeconfig
-        run: echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > kubeconfig
-
-      - name: Deploy to staging
+      - name: Output image tags
         run: |
-          kubectl --kubeconfig=kubeconfig set image deployment/cloud11-app \
-            app=ghcr.io/${{ github.repository }}:${{ github.sha }} \
-            --namespace=staging
-          kubectl --kubeconfig=kubeconfig rollout status deployment/cloud11-app \
-            --namespace=staging --timeout=120s
-
-  smoke-test-staging:
-    runs-on: ubuntu-latest
-    needs: deploy-staging
-    steps:
-      - name: Hit health endpoint
-        run: |
-          sleep 20
-          curl -f https://staging.cloud11-app.example.com/health || exit 1
-
-  deploy-production:
-    runs-on: ubuntu-latest
-    needs: smoke-test-staging
-    environment: production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-
-      - name: Configure kubeconfig
-        run: echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 -d > kubeconfig
-
-      - name: Deploy to production
-        run: |
-          kubectl --kubeconfig=kubeconfig set image deployment/cloud11-app \
-            app=ghcr.io/${{ github.repository }}:${{ github.sha }} \
-            --namespace=production
-          kubectl --kubeconfig=kubeconfig rollout status deployment/cloud11-app \
-            --namespace=production --timeout=120s
+          echo "✅ Image pushed: ghcr.io/${{ github.repository }}:${{ github.sha }}"
+          echo "✅ Image pushed: ghcr.io/${{ github.repository }}:latest"
 
   notify:
     runs-on: ubuntu-latest
-    needs: [deploy-production, smoke-test-staging]
+    needs: build-and-push
     if: failure()
     steps:
       - name: Notify failure

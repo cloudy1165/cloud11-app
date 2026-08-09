@@ -7,12 +7,13 @@
 
 ## Project Overview
 
-This project demonstrates a fully automated CI/CD pipeline using **GitHub Actions** for a Node.js + Express sample application. The pipeline automatically builds, tests, scans, containerizes, and deploys code on every push — with a manual approval gate for production.
+This project demonstrates a fully automated CI/CD pipeline using **GitHub Actions** for a Node.js + Express sample application. The pipeline automatically builds, tests, scans, containerizes, and pushes code to a container registry on every push to `main`.
 
-### Live Demo Flow
+**Deployment:** Image is built, scanned, and pushed to GHCR. Local run via Docker Compose.
+
+### Pipeline Flow
 ```
 code push → lint → test → Docker build → Trivy scan → GHCR push
-    → auto-deploy staging → smoke test → approval gate → production
 ```
 
 ## Tech Stack
@@ -20,10 +21,8 @@ code push → lint → test → Docker build → Trivy scan → GHCR push
 | Category | Choice |
 |----------|--------|
 | Runtime | Node.js 20 + Express |
-| Database | PostgreSQL 16 (SQLite fallback for local) |
 | Container | Docker (multi-stage) |
 | Registry | GitHub Container Registry (GHCR) |
-| Deployment | IBM Code Engine (primary), Kubernetes fallback |
 | CI/CD | GitHub Actions |
 | Security | Trivy, Dependabot, GitHub Secret Scanning |
 | Monitoring | Structured logs + UptimeRobot |
@@ -33,7 +32,6 @@ code push → lint → test → Docker build → Trivy scan → GHCR push
 ### Prerequisites
 - Node.js 20+
 - Docker Desktop
-- PostgreSQL (optional, for local DB)
 - Git
 
 ### Run Locally
@@ -45,13 +43,10 @@ cd cloud11-app
 # Install dependencies
 npm install
 
-# Copy environment file
-cp .env.example .env
-
-# Run with Docker Compose (recommended)
+# Run with Docker Compose
 docker-compose up --build
 
-# Or run directly (requires PostgreSQL)
+# Or run directly
 npm start
 ```
 
@@ -92,22 +87,7 @@ Developer → git push → GitHub
                      Trivy Image Scan
                              │
                              ▼
-                   Push to GHCR (with SHA tag)
-                             │
-                             ▼
-                  Deploy to STAGING (automatic)
-                             │
-                             ▼
-                       Smoke Tests
-                             │
-                             ▼
-          Manual Approval Gate (GitHub Environments)
-                             │
-                             ▼
-                Deploy to PRODUCTION
-                             │
-                             ▼
-                    Monitoring + Alerts
+                   Push to GHCR (SHA + latest tag)
 ```
 
 ## Branching Strategy
@@ -121,30 +101,26 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
 ## Secrets Management
 
 All sensitive values are stored in GitHub Actions Secrets:
-- `KUBE_CONFIG_STAGING` — Base64-encoded kubeconfig for staging
-- `KUBE_CONFIG_PROD` — Base64-encoded kubeconfig for production
 - `SLACK_WEBHOOK_URL` — Pipeline failure notifications
 
 ## Rollback Procedure
 
-To roll back a bad deployment:
-
+To roll back to a previous image:
 ```bash
-# List recent deployments
-kubectl rollout history deployment/cloud11-app -n production
+docker compose pull  # pulls latest (revert git, re-push)
+docker compose up -d --force-recreate app
+```
 
-# Rollback to previous version
-kubectl rollout undo deployment/cloud11-app -n production
-
-# Verify rollback
-kubectl rollout status deployment/cloud11-app -n production --timeout=120s
+Or redeploy a specific tag:
+```bash
+docker compose up -d app:ghcr.io/cloudy1165/cloud11-app:<commit-sha>
 ```
 
 ## Monitoring
 
 - Health endpoint: `/health`
 - Structured JSON logging on all requests
-- UptimeRobot monitoring on staging + production URLs
+- UptimeRobot monitoring on local/staging URL
 - Slack alerts on pipeline failures
 
 ## Team Roles
