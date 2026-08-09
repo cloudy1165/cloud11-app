@@ -2,7 +2,6 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 RUN apk update && apk upgrade --no-cache
-RUN npm install -g npm@latest undici@latest ip-address@latest tar@latest brace-expansion@latest
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY . .
@@ -11,7 +10,7 @@ COPY . .
 FROM node:22-alpine
 WORKDIR /app
 RUN apk update && apk upgrade --no-cache
-RUN npm install -g npm@latest undici@latest ip-address@latest tar@latest brace-expansion@latest
+RUN rm -rf /usr/local/lib/node_modules/npm
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 COPY --from=build --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=build --chown=nodejs:nodejs /app/src ./src
