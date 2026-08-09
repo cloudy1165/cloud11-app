@@ -71,10 +71,19 @@ jobs:
     needs: build-and-push
     if: ${{ failure() }}
     steps:
+      - name: Check Slack webhook
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "SLACK_WEBHOOK_URL is missing; skipping Slack notify."
+            exit 0
+          fi
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Notify failure
-        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
         uses: slackapi/slack-github-action@v1
         with:
-          payload: '{"text":"Pipeline failed on ${{ github.repository }} at commit ${{ github.sha }}. View: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+          payload: |
+            {"text":"Pipeline failed on ${{ github.repository }} at commit ${{ github.sha }}. View: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
