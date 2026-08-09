@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **Group:** Cloud11  
-**Team:** Krishna Singh · Sahil Bisht · Ruhaan Babbar · Saharsh Kumar · Nishant Sangwan  
+**Team:** Saharsh Kumar · Nishant Sangwan  
 **Project Type:** IBM Internship — DevOps  
 **Last Updated:** August 2026
 
@@ -233,6 +233,3 @@ This is useful to verify YAML syntax changes before committing.
 - **Structured logging (JSON) is worth the extra 10 lines.** It makes log parsing and monitoring setup dramatically easier.
 - **Docker multi-stage builds matter.** Our runtime image is significantly smaller than a naive single-stage build — less surface area for vulnerabilities.
 
-## License
-
-MIT
