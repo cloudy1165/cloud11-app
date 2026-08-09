@@ -86,7 +86,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify failure
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v4
         with:
           payload: |
             {"text":"Pipeline failed on ${{ github.repository }} at commit ${{ github.sha }}. View: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
