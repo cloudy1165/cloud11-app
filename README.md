@@ -81,34 +81,39 @@ npm run lint
 
 ```mermaid
 flowchart TD
-    A([👨‍💻 git push]) --> B[GitHub]
-    B --> C{GitHub Actions}
+    A["👨‍💻 git push"] --> B["GitHub"]
+    B --> C{"GitHub Actions"}
 
-    C --> D[CI Workflow]
-    D --> D1[ESLint Lint]
-    D --> D2[Jest Tests + Coverage]
-    D --> D3[npm audit]
-    D --> D4[Trivy FS Scan]
-    D --> D5[CodeQL Analysis]
+    C --> D["CI Workflow"]
+    D --> D1["ESLint Lint"]
+    D --> D2["Jest Tests + Coverage"]
+    D --> D3["npm audit"]
+    D --> D4["Trivy FS Scan"]
+    D --> D5["CodeQL Analysis"]
 
-    D1 & D2 & D3 & D4 & D5 --> E{All checks pass?}
-    E -- No --> F([❌ PR Blocked])
-    E -- Yes --> G([✅ PR can merge])
+    D1 --> E{"All checks pass?"}
+    D2 --> E
+    D3 --> E
+    D4 --> E
+    D5 --> E
 
-    G --> H[CD Workflow on main]
-    H --> H1[Docker multi-stage build]
-    H1 --> H2[Trivy image scan]
-    H2 --> H3[Push to GHCR with SHA + latest tag]
-    H3 --> H4[Slack notify on failure]
+    E -- No --> F["❌ PR Blocked"]
+    E -- Yes --> G["✅ PR can merge"]
 
-    H3 --> I[(ghcr.io/cloudy1165/cloud11-app)]
-    I --> J[docker compose pull + up]
-    J --> K([🌐 App running on :3000])
+    G --> H["CD Workflow on main"]
+    H --> H1["Docker multi-stage build"]
+    H1 --> H2["Trivy image scan"]
+    H2 --> H3["Push to GHCR with SHA + latest tag"]
+    H3 --> H4["Slack notify on failure"]
 
-    K --> L[/health — status, uptime, memory]
-    K --> M[/metrics — Prometheus]
-    K --> N[/api/docs — Swagger UI]
-    K --> O[/api/notes — CRUD]
+    H3 --> I[("ghcr.io/cloudy1165/cloud11-app")]
+    I --> J["docker compose pull + up"]
+    J --> K["🌐 App running on :3000"]
+
+    K --> L["/health — status, uptime, memory"]
+    K --> M["/metrics — Prometheus"]
+    K --> N["/api/docs — Swagger UI"]
+    K --> O["/api/notes — CRUD"]
 ```
 
 ## Branching Strategy
