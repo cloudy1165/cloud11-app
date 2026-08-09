@@ -61,8 +61,8 @@ jobs:
           exit-code: '0'
 
       - name: Upload Trivy image scan results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() && hashFiles('trivy-image-results.sarif') != ''
         with:
           sarif_file: 'trivy-image-results.sarif'
 
@@ -76,20 +76,16 @@ jobs:
     needs: build-and-push
     if: ${{ failure() }}
     steps:
-      - name: Check Slack webhook
+      - name: Notify Slack on failure
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
-            echo "SLACK_WEBHOOK_URL is missing; skipping Slack notify."
+            echo "⚠️  SLACK_WEBHOOK_URL secret not set — skipping Slack notification."
+            echo "    To enable: repo Settings → Secrets → New repository secret → SLACK_WEBHOOK_URL"
             exit 0
           fi
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Notify failure
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            {"text":"Pipeline failed on ${{ github.repository }} at commit ${{ github.sha }}. View: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
+          curl -s -X POST -H 'Content-type: application/json' \
+            --data '{"text":"❌ CD pipeline failed on `${{ github.repository }}` at commit `${{ github.sha }}`.\nView run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+            "${SLACK_WEBHOOK_URL}"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
