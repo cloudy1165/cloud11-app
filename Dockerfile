@@ -1,6 +1,7 @@
 # Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
+RUN apk update && apk upgrade --no-cache
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY . .
@@ -8,6 +9,7 @@ COPY . .
 # Runtime stage
 FROM node:20-alpine
 WORKDIR /app
+RUN apk update && apk upgrade --no-cache
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 COPY --from=build --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=build --chown=nodejs:nodejs /app/src ./src

@@ -105,6 +105,36 @@ describe('Notes API', () => {
     expect(res.body.error).toBe('Note not found');
   });
 
+  it('should return 400 when note ID is not a valid integer', async () => {
+    const getRes = await request(app).get('/api/notes/abc');
+    expect(getRes.statusCode).toBe(400);
+    expect(getRes.body.error).toBe('Invalid note ID');
+
+    const putRes = await request(app).put('/api/notes/abc').send({ title: 'New' });
+    expect(putRes.statusCode).toBe(400);
+    expect(putRes.body.error).toBe('Invalid note ID');
+
+    const delRes = await request(app).delete('/api/notes/abc');
+    expect(delRes.statusCode).toBe(400);
+    expect(delRes.body.error).toBe('Invalid note ID');
+  });
+
+  it('should return 400 when creating a note with empty or whitespace title', async () => {
+    const res = await request(app)
+      .post('/api/notes')
+      .send({ title: '   ' });
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toBe('Title is required');
+  });
+
+  it('should return 400 when updating a note with empty or whitespace title', async () => {
+    const res = await request(app)
+      .put('/api/notes/1')
+      .send({ title: '   ' });
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toBe('Title cannot be empty');
+  });
+
   it('should delete a note', async () => {
     const res = await request(app).delete('/api/notes/3');
     expect(res.statusCode).toBe(204);

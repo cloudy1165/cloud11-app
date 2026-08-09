@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 /**
  * Assigns a unique X-Request-Id to every incoming request.
  * - Uses the client-supplied header if present (allows tracing across services).
