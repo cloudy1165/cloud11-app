@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/CLOUD11_ORG/cloud11-app:latest
+          image: ghcr.io/cloudy1165/cloud11-app:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

@@ -39,7 +39,7 @@ code push → lint → test → Docker build → Trivy scan → GHCR push
 ### Run Locally
 ```bash
 # Clone the repo
-git clone https://github.com/<org>/cloud11-app.git
+git clone https://github.com/cloudy1165/cloud11-app.git
 cd cloud11-app
 
 # Install dependencies
