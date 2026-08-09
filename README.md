@@ -218,9 +218,9 @@ This is useful to verify YAML syntax changes before committing.
 
 | Member | Contributions |
 |--------|---------------|
-| **Krishna Singh** | Sample app (`server.js`, `notes.js`), unit tests, test coverage expansion |
-| **Sahil Bisht** | `ci.yml` workflow, branching strategy, `CONTRIBUTING.md`, ESLint config |
-| **Ruhaan Babbar** | `Dockerfile` (multi-stage), `.dockerignore`, `docker-compose.yml`, GHCR integration |
+| **Saharsh Kumar** | Sample app (`server.js`, `notes.js`), unit tests, test coverage expansion |
+| **Nishant Sangwan** | `ci.yml` workflow, branching strategy, `CONTRIBUTING.md`, ESLint config |
+| **Saharsh Kumar** | `Dockerfile` (multi-stage), `.dockerignore`, `docker-compose.yml`, GHCR integration |
 | **Saharsh Kumar** | `cd.yml` workflow, GitHub Environments setup, Dependabot config, rollback docs |
 | **Nishant Sangwan** | Request logger middleware, `SECURITY.md`, README, demo preparation, `DEMO.md` |
 
