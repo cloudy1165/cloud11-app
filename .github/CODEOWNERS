@@ -1,0 +1,35 @@
+# CODEOWNERS
+# Maps files/directories to their primary owners.
+# GitHub automatically requests reviews from these people on relevant PRs.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default — catch-all (whole repo)
+*                           @cloudy1165
+
+# Application source code
+/src/server.js              @cloudy1165   # Krishna Singh
+/src/routes/                @cloudy1165   # Krishna Singh
+
+# CI/CD workflows
+/.github/workflows/         @cloudy1165   # Sahil Bisht
+
+# Docker & containerization
+/Dockerfile                 @cloudy1165   # Ruhaan Babbar
+/docker-compose*.yml        @cloudy1165   # Ruhaan Babbar
+/.dockerignore              @cloudy1165   # Ruhaan Babbar
+
+# Monitoring & middleware
+/src/middleware/            @cloudy1165   # Nishant Sangwan
+
+# Infrastructure (reference only — not deployed)
+/k8s/                       @cloudy1165   # Saharsh Kumar
+/terraform/                 @cloudy1165   # Saharsh Kumar
+
+# Documentation
+/README.md                  @cloudy1165   # Nishant Sangwan
+/DEMO.md                    @cloudy1165   # Nishant Sangwan
+/SECURITY.md                @cloudy1165   # Nishant Sangwan
+/CONTRIBUTING.md            @cloudy1165   # Sahil Bisht
+
+# Tests
+/tests/                     @cloudy1165   # Krishna Singh

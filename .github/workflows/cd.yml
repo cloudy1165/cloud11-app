@@ -5,9 +5,14 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: build
     permissions:
       contents: read
       packages: write
@@ -87,3 +92,38 @@ jobs:
             {"text":"Pipeline failed on ${{ github.repository }} at commit ${{ github.sha }}. View: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # PRODUCTION DEPLOY (manual approval gate)
+  # ─────────────────────────────────────────────────────────────────────────
+  # To activate:
+  #   1. Go to repo Settings → Environments → Create "production"
+  #   2. Add a Required Reviewer (yourself or a teammate)
+  #   3. Uncomment the job below and fill in the deploy command
+  #      for your target (Docker Compose + SSH, IBM Code Engine CLI, etc.)
+  #
+  # deploy-production:
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-push
+  #   environment: production   # GitHub pauses here and waits for approval
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     # Example: SSH into a server and pull the new image
+  #     # - name: Deploy via SSH
+  #     #   uses: appleboy/ssh-action@v1
+  #     #   with:
+  #     #     host: ${{ secrets.DEPLOY_HOST }}
+  #     #     username: ${{ secrets.DEPLOY_USER }}
+  #     #     key: ${{ secrets.DEPLOY_SSH_KEY }}
+  #     #     script: |
+  #     #       docker compose pull
+  #     #       docker compose up -d --force-recreate app
+  #
+  #     # Example: IBM Code Engine
+  #     # - name: Deploy to IBM Code Engine
+  #     #   run: |
+  #     #     ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }}
+  #     #     ibmcloud ce app update --name cloud11-app \
+  #     #       --image ghcr.io/${{ github.repository }}:${{ github.sha }}

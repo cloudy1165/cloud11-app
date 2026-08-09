@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Cloud11 API",
+    "description": "Complete API collection for Cloud11 Notes REST API — IBM Internship DevOps Demo",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health & Meta",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health",
+            "description": "Returns app status, uptime, memory usage, and Node.js version."
+          }
+        },
+        {
+          "name": "Version Info",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/version",
+            "description": "Returns app version, environment, uptime, and Node.js version."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "List All Notes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/notes",
+            "description": "Returns all notes as a JSON array."
+          }
+        },
+        {
+          "name": "Get Single Note",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/notes/1",
+            "description": "Returns note with id=1. Change the path param to try others."
+          }
+        },
+        {
+          "name": "Get Non-Existent Note (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/notes/999",
+            "description": "Demonstrates 404 error handling."
+          }
+        },
+        {
+          "name": "Create Note",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/notes",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My new note\",\n  \"completed\": false\n}"
+            },
+            "description": "Creates a new note. Title is required."
+          }
+        },
+        {
+          "name": "Create Note — Missing Title (400)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/notes",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": false\n}"
+            },
+            "description": "Demonstrates 400 validation error when title is missing."
+          }
+        },
+        {
+          "name": "Update Note",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/notes/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated title\",\n  \"completed\": true\n}"
+            },
+            "description": "Updates an existing note by id."
+          }
+        },
+        {
+          "name": "Delete Note",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/notes/2",
+            "description": "Deletes note with id=2. Returns 204 No Content."
+          }
+        },
+        {
+          "name": "Delete Non-Existent Note (404)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/notes/9999",
+            "description": "Demonstrates 404 error handling for DELETE."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "Unknown Route (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/doesnotexist",
+            "description": "Demonstrates the global 404 handler."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL. Change to your Docker/staging URL for remote testing."
+    }
+  ]
+}

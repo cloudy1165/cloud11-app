@@ -1,0 +1,56 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in as much detail as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: "When I call POST /api/notes without a title, I get a 500 instead of 400..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this?
+      placeholder: |
+        1. Run `npm start`
+        2. Send `curl -X POST http://localhost:3000/api/notes`
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: "Should return 400 Bad Request with {error: 'Title is required'}"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: App version / commit SHA
+      placeholder: "e.g. 1.0.0 or abc1234"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local (npm start)
+        - Docker (docker compose up)
+        - CI/CD pipeline
+    validations:
+      required: true
