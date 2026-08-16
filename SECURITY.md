@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in this project, **please do NOT open a public GitHub issue**.
+If you discover a security vulnerability in this project, **please do NOT open a public GitHub issue**
 
 Instead, contact the team privately:
 
